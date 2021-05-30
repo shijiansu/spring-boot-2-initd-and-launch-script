@@ -12,7 +12,9 @@
 
 ## Outline
 
-- TBC
+- spring-boot-demo
+- spring-boot-logback
+- spring-boot-logback-spring-profile
 
 ## Background and objectives
 
@@ -75,17 +77,17 @@ sdk list java # to use 11.0.10-zulu
 sdk install java 11.0.10-zulu
 java -version # looking for Java 11
 
-cd demo
+cd spring-boot-demo
 ./mvnw clean package
 cd target && ls
 # classes                          demo-0.0.1-SNAPSHOT.jar.original generated-test-sources           maven-status                     test-classes
 # demo-0.0.1-SNAPSHOT.jar          generated-sources                maven-archiver                   surefire-reports
 
 # now it is the runnable jar
-java -jar demo-0.0.1-SNAPSHOT.jar
-chmod +x demo-0.0.1-SNAPSHOT.jar
-./demo-0.0.1-SNAPSHOT.jar       
-zsh: exec format error: ./demo-0.0.1-SNAPSHOT.jar
+java -jar spring-boot-demo-0.0.1-SNAPSHOT.jar
+chmod +x spring-boot-demo-0.0.1-SNAPSHOT.jar
+./spring-boot-demo-0.0.1-SNAPSHOT.jar       
+zsh: exec format error: ./spring-boot-demo-0.0.1-SNAPSHOT.jar
 
 cd ..
 
@@ -93,12 +95,12 @@ cd ..
 vi pom.xml # to include <executable>true</executable>
 ./mvnw clean package
 cd target
-java -jar demo-0.0.1-SNAPSHOT.jar
-chmod +x demo-0.0.1-SNAPSHOT.jar
-./demo-0.0.1-SNAPSHOT.jar # now this one also running
+java -jar spring-boot-demo-0.0.1-SNAPSHOT.jar
+chmod +x spring-boot-demo-0.0.1-SNAPSHOT.jar
+./spring-boot-demo-0.0.1-SNAPSHOT.jar # now this one also running
 
 # you can run java tvf to view the inside of the jar
-jar tvf demo-0.0.1-SNAPSHOT.jar # Launcher.class, JarLauncher.class, ExecutableArchiveLauncher.class
+jar tvf spring-boot-demo-0.0.1-SNAPSHOT.jar # Launcher.class, JarLauncher.class, ExecutableArchiveLauncher.class
 ```
 
 ### What does happen in Spring Boot for executable jar
@@ -127,23 +129,23 @@ Use the environment variable when doing runtime - https://docs.spring.io/spring-
 # You still can run it directly as executable jar, but it would not act as background service as init.d
 # ----------------------------------------
 export DEBUG=ANY_VALUE # it set +x for bash debug
-export ROOT_FOLDER="$HOME/demo-0.0.1-SNAPSHOT"
+export ROOT_FOLDER="$HOME/spring-boot-demo-0.0.1-SNAPSHOT"
 mkdir "$ROOT_FOLDER" # set it if you do not have the permission to write the log file into /var/log
 export LOG_FOLDER="$ROOT_FOLDER" # if folder does not exist, it falls down to /var/log
 export PID_FOLDER="$ROOT_FOLDER" # if folder does not exist, it falls down to /tmp
-./demo-0.0.1-SNAPSHOT.jar
-ls ~/demo-0.0.1-SNAPSHOT # nothing
+./spring-boot-demo-0.0.1-SNAPSHOT.jar
+ls ~/spring-boot-demo-0.0.1-SNAPSHOT # nothing
 
 # ----------------------------------------
 # Simulate running as the background service.
 # In case you are running this in Mac without init.d
 # ----------------------------------------
 export MODE=service
-./demo-0.0.1-SNAPSHOT.jar start # it is the service mode, need to use xxx.jar 
+./spring-boot-demo-0.0.1-SNAPSHOT.jar start # it is the service mode, need to use xxx.jar 
 # now it will write log and pid file into "$ROOT_FOLDER"
-ls ~/demo-0.0.1-SNAPSHOT # now can see some files
-./demo-0.0.1-SNAPSHOT.jar stop # will remove the pid file
-export APP_NAME=demo # make the log file $APP_NAME.log, and pid file as $APP_NAME.pid
+ls ~/spring-boot-demo-0.0.1-SNAPSHOT # now can see some files
+./spring-boot-demo-0.0.1-SNAPSHOT.jar stop # will remove the pid file
+export APP_NAME=spring-boot-demo # make the log file $APP_NAME.log, and pid file as $APP_NAME.pid
 # console log redirects to $LOG_FOLDER, default is /var/log
 ```
 
@@ -180,27 +182,27 @@ Refer to `spring-boot-project/spring-boot/src/main/java/org/springframework/boot
 
 - Spring pre-defined configuration - https://github.com/spring-projects/spring-boot/tree/master/spring-boot-project/spring-boot/src/main/resources/org/springframework/boot/logging/logback
 
-- make copy from `demo`
-  - `demo`- 
-  - `demo-logback-xml` - use with Logback XML only
-  - `demo-logback-spring-xml` - use with Logback XML and Spring Profile (Spring Profile)
+- make copy from `spring-boot-demo`
+  - `spring-boot-logback` - use with Logback XML only
+  - `spring-boot-logback-spring-profile` - use with Logback XML and Spring Profile (Spring Profile)
 
 ```bash
 export DEBUG= # disable debugging
-export ROOT_FOLDER="$HOME/demo-0.0.1-SNAPSHOT"
+export ROOT_FOLDER="$HOME/spring-boot-demo-0.0.1-SNAPSHOT"
 mkdir "$ROOT_FOLDER"
 export LOG_FOLDER="$ROOT_FOLDER"
 export PID_FOLDER="$ROOT_FOLDER"
-export APP_NAME=demo
+export APP_NAME=spring-boot-demo
 
 export MODE=service
 
-# demo
-cd demo
-./mvnw clean package && cd target && chmod +x demo-0.0.1-SNAPSHOT.jar
+# spring-boot-demo
+cd spring-boot-demo
+./mvnw clean package && cd target
+chmod +x spring-boot-demo-0.0.1-SNAPSHOT.jar
 
-java -jar demo-0.0.1-SNAPSHOT.jar # CONSOLE log in logback default log configuration
-# java -jar demo-0.0.1-SNAPSHOT.jar & # also same as "java -jar demo-0.0.1-SNAPSHOT.jar"
+java -jar spring-boot-demo-0.0.1-SNAPSHOT.jar # CONSOLE log in logback default log configuration
+# java -jar spring-boot-demo-0.0.1-SNAPSHOT.jar & # also same as "java -jar spring-boot-demo-0.0.1-SNAPSHOT.jar"
 ./demo-0.0.1-SNAPSHOT.jar start # CONSOLE log in logback default log configuration
 
 # demo-logback-xml
@@ -208,22 +210,23 @@ cd ../../demo-logback-xml
 ./mvnw clean package && cd target && chmod +x demo-logback-xml-0.0.1-SNAPSHOT.jar
 
 ./demo-logback-xml-0.0.1-SNAPSHOT.jar start
-cat /tmp/demo.log
-cat $HOME/demo-0.0.1-SNAPSHOT/demo.log # CONSOLE log because launch.script
-rm /tmp/demo.log
-rm $HOME/demo-0.0.1-SNAPSHOT/demo.log
+cat /tmp/spring-boot-demo.log
+cat $HOME/spring-boot-demo-0.0.1-SNAPSHOT/spring-boot-demo.log # CONSOLE log because launch.script
+rm /tmp/spring-boot-demo.log
+rm $HOME/spring-boot-demo-0.0.1-SNAPSHOT/spring-boot-demo.log
 
 # demo-logback-spring-xml
 export spring_profiles_active=production # enable the spring profile
 
-cd ../../demo-logback-spring-xml
-./mvnw clean package && cd target && chmod +x demo-logback-spring-xml-0.0.1-SNAPSHOT.jar
+cd ../../spring-boot-demo-logback-spring-xml
+./mvnw clean package && cd target
+chmod +x spring-boot-demo-logback-spring-xml-0.0.1-SNAPSHOT.jar
 
-./demo-logback-spring-xml-0.0.1-SNAPSHOT.jar start
-cat /tmp/demo.log
-cat $HOME/demo-0.0.1-SNAPSHOT/demo.log # CONSOLE log because launch.script
-rm /tmp/demo.log
-rm $HOME/demo-0.0.1-SNAPSHOT/demo.log
+./spring-boot-demo-logback-spring-xml-0.0.1-SNAPSHOT.jar start
+cat /tmp/spring-boot-demo.log
+cat $HOME/spring-boot-demo-0.0.1-SNAPSHOT/spring-boot-demo.log # CONSOLE log because launch.script
+rm /tmp/spring-boot-demo.log
+rm $HOME/spring-boot-demo-0.0.1-SNAPSHOT/spring-boot-demo.log
 ```
 
 ## Summary
