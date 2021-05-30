@@ -14,7 +14,7 @@
 
 - TBC
 
-## Background and Objective
+## Background and objectives
 
 While packaging the Spring Boot application jar, there is a feature of packaging as the executable jar. And after that, when boot up the application, there are couples of options offering by Spring Boot - "Deploying Spring Boot Applications".
 
